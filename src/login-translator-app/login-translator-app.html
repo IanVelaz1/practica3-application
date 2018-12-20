@@ -1,0 +1,45 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../bower_components/login-component/login-component.html">
+<link rel="import" href="../../bower_components/hero-list/hero-list.html">
+<dom-module id="login-translator-app">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+    </style>
+    <h2>Hello [[prop1]]!</h2>
+    <login-component on-registro-usuario="registrarUsuario"></login-component>
+    <hero-list hero-list="[[heroList]]"></hero-list>
+  </template>
+
+  <script>
+    /**
+     * @customElement
+     * @polymer
+     */
+    class LoginTranslatorApp extends Polymer.Element {
+      static get is() { return 'login-translator-app'; }
+      static get properties() {
+        return {
+          prop1: {
+            type: String,
+            value: 'login-translator-app'
+          },
+          heroList:{
+            type:Array,
+            value:[]
+          }
+        };
+      }
+      registrarUsuario(event){
+        console.log(event.detail);
+        this.push("heroList",event.detail)
+        console.log(this.heroList);
+        
+      }
+    }
+
+    window.customElements.define(LoginTranslatorApp.is, LoginTranslatorApp);
+  </script>
+</dom-module>
