@@ -1,6 +1,7 @@
 <link rel="import" href="../../bower_components/polymer/polymer-element.html">
 <link rel="import" href="../../bower_components/login-component/login-component.html">
 <link rel="import" href="../../bower_components/hero-list/hero-list.html">
+<link rel="import" href="../../bower_components/polymer/lib/elements/dom-if.html">
 <dom-module id="login-translator-app">
   <template>
     <style>
@@ -8,9 +9,14 @@
         display: block;
       }
     </style>
-    <h2>Hello [[prop1]]!</h2>
-    <login-component on-registro-usuario="registrarUsuario"></login-component>
-    <hero-list hero-list="[[heroList]]"></hero-list>
+				<h2>Hello [[prop1]]!</h2>
+				<button on-click="seeList">click mee biath</button>
+
+    <login-component on-registro-usuario="registrarUsuario" ></login-component>
+     <template is="dom-if" if="[[heroListVisible]]">
+						<hero-list list="[[userList]]" on-list-changed="pushToUserArray"></hero-list>
+					</template> 
+  	  
   </template>
 
   <script>
@@ -26,18 +32,34 @@
             type: String,
             value: 'login-translator-app'
           },
-          heroList:{
+          userList:{
             type:Array,
             value:[]
+          },
+          heroListVisible:{
+            type:Boolean,
+            value:false
           }
         };
       }
+
       registrarUsuario(event){
-        console.log(event.detail);
-        this.push("heroList",event.detail)
-        console.log(this.heroList);
-        
-      }
+								
+						//	this.push("userList",event.detail);
+							const user = event.detail;
+                this.push('userList', user);
+								
+						}
+
+
+						seeList(){
+							this.heroListVisible=!this.heroListVisible;
+						}
+
+						
+						
+						
+
     }
 
     window.customElements.define(LoginTranslatorApp.is, LoginTranslatorApp);
