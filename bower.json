@@ -5,7 +5,8 @@
   "dependencies": {
     "polymer": "Polymer/polymer#^2.0.0",
     "login-component": "jusolete/practica-1-polymer",
-    "hero-list": "jusolete/hero-list"
+    "hero-list": "jusolete/hero-list",
+    "translate-component": "jusolete/translate-component"
   },
   "devDependencies": {
     "web-component-tester": "Polymer/web-component-tester#^6.0.0",

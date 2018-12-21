@@ -1,7 +1,8 @@
 <link rel="import" href="../../bower_components/polymer/polymer-element.html">
 <link rel="import" href="../../bower_components/login-component/login-component.html">
 <link rel="import" href="../../bower_components/hero-list/hero-list.html">
-<link rel="import" href="../../bower_components/polymer/lib/elements/dom-if.html">
+<link rel="import" href="../../bower_components/polymer/lib/elements/dom-if.html">}
+<link rel="import" href="../../bower_components/translate-component/translate-component.html">
 <dom-module id="login-translator-app">
   <template>
     <style>
@@ -9,14 +10,23 @@
         display: block;
       }
     </style>
-				<h2>Hello [[prop1]]!</h2>
-				<button on-click="seeList">click mee biath</button>
+    <translate-component on-language-changed="changeLanguage"></translate-component>
+    <template is="dom-if" if="[[!heroListVisible]]">
+      <login-component on-registro-usuario="registrarUsuario" on-user-login="validateLoginInfo" language="[[actualLanguage]]">
+      </login-component>
+      <template is="dom-if" if="{{wrongPassword}}">
+        <p class="error">Contraseña incorrecta</p>
+      </template>
+      <template is="dom-if" if="{{mailNotFound}}">
+        <p class="error">Mail no encontrado</p>
+      </template>
+    </template>
 
-    <login-component on-registro-usuario="registrarUsuario" ></login-component>
-     <template is="dom-if" if="[[heroListVisible]]">
-						<hero-list list="[[userList]]" on-list-changed="pushToUserArray"></hero-list>
-					</template> 
-  	  
+    <template is="dom-if" if="[[heroListVisible]]">
+      <hero-list list="[[userList]]" on-list-changed="pushToUserArray" on-user-logout="logOut"></hero-list>
+
+    </template>
+
   </template>
 
   <script>
@@ -25,40 +35,148 @@
      * @polymer
      */
     class LoginTranslatorApp extends Polymer.Element {
-      static get is() { return 'login-translator-app'; }
+      static get is() {
+        return 'login-translator-app';
+      }
       static get properties() {
         return {
-          prop1: {
-            type: String,
-            value: 'login-translator-app'
+          userList: {
+            type: Array,
+            value: []
           },
-          userList:{
-            type:Array,
-            value:[]
+          heroListVisible: {
+            type: Boolean,
+            value: false
           },
-          heroListVisible:{
-            type:Boolean,
-            value:false
+          mailNotFound: {
+            type: Boolean,
+            value: false
+          },
+          wrongPassword: {
+            type: Boolean,
+            value: false
+          },
+          actualLanguage: {
+            type: Object,
+            value: {}
+          },
+          es: {
+            type: Object,
+            value: {
+
+              logIn: {
+                title: "Iniciar Sesion",
+                noAccountText: "No tienes cuenta con nosotros?",
+                noAccountBtn: "Registrate",
+                mailLabel: "E-mail",
+                passwordLabel: "Contraseña",
+                logInButton: "Iniciar sesion"
+              },
+              signIn: {
+                title: "Crear cuenta",
+                withAccountText: "Ya tienes cuenta con nosotros?",
+                withAccountBtn: "Iniciar sesion",
+                nameLabel: "Nombre",
+                addressLabel: "Direccion",
+                phoneLabel: "Telefono",
+                passwordLabel: "Contraseña",
+                repeatPasswordLabel: "Repetir contraseña",
+                imageUrlLabel: "Url de imagen",
+                mailLabel: "E-mail",
+                passwordLabel: "Contraseña",
+                registerBtn: "Iniciar sesion"
+              }
+
+            }
+          },
+          en: {
+            type: Object,
+            value: {
+
+              logIn: {
+                title: "Log In",
+                noAccountText: "you dont have an account with us?",
+                noAccountBtn: "SIgn In",
+                mailLabel: "Mail",
+                passwordLabel: "Password",
+                logInButton: "LogIn"
+              },
+              signIn: {
+                title: "Sign In",
+                withAccountText: "Do you already have an account with us?",
+                withAccountBtn: "Login",
+                nameLabel: "Name",
+                addressLabel: "Address",
+                phoneLabel: "Phone",
+                passwordLabel: "Password",
+                repeatPasswordLabel: "Repeat password",
+                imageUrlLabel: "Image url",
+                mailLabel: "E-mail",
+                passwordLabel: "Password",
+                registerBtn: "Register"
+              }
+
+            }
           }
         };
       }
 
-      registrarUsuario(event){
-								
-						//	this.push("userList",event.detail);
-							const user = event.detail;
-                this.push('userList', user);
-								
-						}
+      ready() {
+        super.ready();
+        if (!this.actualLanguage.name) {
+          this.set("actualLanguage", this.es);
+        }
+      }
+
+      registrarUsuario(event) {
+        const user = event.detail;
+        this.push('userList', user);
+
+      }
+
+      seeList() {
+        this.heroListVisible = !this.heroListVisible;
+      }
+
+      validateLoginInfo(event) {
+        let userE = event.detail;
+        let indexUser = this.userList.findIndex(user => user.mail === userE.mail);
+        if (indexUser == -1) {
+          this.mailNotFound = true;
+        } else {
+          this.mailNotFound = false;
+          let userFound = this.userList[indexUser];
+          if (userE.password !== userFound.password) {
+            this.wrongPassword = true;
+          } else {
+            this.wrongPassword = false;
+            this.set("heroListVisible", true);
+
+          }
+        }
+
+      }
+
+      logOut(event) {
+        this.heroListVisible = false;
+      }
+
+      changeLanguage(event) {
+        switch (event.detail) {
+          case "es":
+            this.set("actualLanguage", this.es);
+            break;
+          case "en":
+            this.set("actualLanguage", this.en);
+            break;
+        }
 
 
-						seeList(){
-							this.heroListVisible=!this.heroListVisible;
-						}
+      }
 
-						
-						
-						
+
+
+
 
     }
 
