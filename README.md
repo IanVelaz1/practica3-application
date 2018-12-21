@@ -2,6 +2,21 @@
 
 login with translation app
 
+## Install bower package manager
+```
+$ npm i -g bower
+```
+
+##Install the project dependencies
+```
+$ bower install
+```
+
+## Application functionality
+```
+Register users and login, it comes with different language options
+```
+
 ## Install the Polymer-CLI
 
 First, make sure you have the [Polymer CLI](https://www.npmjs.com/package/polymer-cli) installed. Then run `polymer serve` to serve your application locally.
