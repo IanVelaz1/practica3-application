@@ -10,7 +10,7 @@
         display: block;
       }
     </style>
-    <translate-component on-language-selected="changeLanguage" on-language-load-error="loadErrorLanguages"></translate-component>
+    <translate-component on-language-selected="changeLanguage" on-language-error="loadErrorLanguages" local-language="[[localLanguage]]" visible-button="[[visibleButton]]"></translate-component>
     <template is="dom-if" if="[[!heroListVisible]]">
       <login-component on-registro-usuario="registrarUsuario" on-user-login="validateLoginInfo" language="[[actualLanguage]]">
       </login-component>
@@ -22,10 +22,10 @@
       </template>
     </template>
 
-    <template is="dom-if" if="[[heroListVisible]]">
-      <hero-list list="[[userList]]" on-list-changed="pushToUserArray" on-user-logout="logOut"></hero-list>
-
-    </template>
+    <div hidden$="[[!heroListVisible]]">
+        <hero-list list="[[userList]]" on-list-changed="pushToUserArray" on-user-logout="logOut"></hero-list>
+    </div>
+      
 
   </template>
 
@@ -59,6 +59,14 @@
           actualLanguage: {
             type: Object,
             value: {}
+          },
+          localLanguage:{
+            type:String,
+            value:"es"
+          },
+          visibleButton:{
+            type:Boolean,
+            value:true
           }
         };
       }
@@ -99,21 +107,11 @@
       }
 
       changeLanguage(event) {
-       
-        if(event.detail.languageSelected==="es"){
-          console.log(event.detail.languages[1].spanish);
-          this.set("actualLanguage",event.detail.languages[1].spanish)
-        }else if(event.detail.languageSelected==="en"){
-          console.log(event.detail.languages[0].english);
-          this.set("actualLanguage",event.detail.languages[0].english)
-        }
-
-
+         this.actualLanguage=event.detail.language;
       }
 
       loadErrorLanguages(event){
-         console.log(event.detail);
-         
+         this.set("actualLanguage",event.detail[0].spanish)
       }
 
 
